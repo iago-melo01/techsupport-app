@@ -18,10 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //Força o retorno de resposta em Json para qualquer requisicao feita no grupo
         // de rotas chamado api
         $middleware->prependToGroup('api', [ForceJsonResponse::class]); 
-        
-        $middleware->trustProxies(at: '*'); //Aceita todas as origens de proxy
-        
-
+       
         //Cria um alias 'role' para o middleware CheckRole
         $middleware->alias(['role' => CheckRole::class]); 
 

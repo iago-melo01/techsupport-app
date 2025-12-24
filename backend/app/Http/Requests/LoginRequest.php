@@ -52,28 +52,7 @@ class LoginRequest extends FormRequest
     }
 
 
-    public function authenticate(): void
-    {
-        $this->ensureIsNotRateLimited();
-
-        $email = $this->normalizedEmail();
-
-        $ok = Auth::attempt([
-            $this->username() => $email,
-            'password' => (string) $this->input('password')
-        ]);
-
-        if(!$ok){
-
-            //incrementa o contador de tentativas dessa throttleKey
-            RateLimiter::hit($this->throttleKey());
-
-            throw ValidationException::withMessages([
-                'email' => 'As credenciais estão incorretas.',
-            ]);
-
-        }
-    }
+    
     public function ensureIsNotRateLimited(){
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
@@ -101,6 +80,6 @@ class LoginRequest extends FormRequest
 
     public function throttleKey(): string 
     {
-        return Str::lower($this->email . '|' . $this->ip());
+        return $this->normalizedEmail() . '|' . $this->ip();
     }
 }
