@@ -1,0 +1,25 @@
+name: projeto-chamadosit
+
+services:
+    mysql:
+        image: mysql:8
+        container_name: chamadosit_mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: chamadosit
+            MYSQL_USER: app
+            MYSQL_PASSWORD: password
+        ports:
+            - "3306:3306"
+        volumes:
+            - dbdata:/var/lib/mysql
+        networks:
+            - laravel
+
+volumes:
+    dbdata:
+        driver: local
+
+networks:
+    laravel:
+        driver: bridge
