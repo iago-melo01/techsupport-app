@@ -6,6 +6,10 @@ use App\Helpers\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class CheckTokenExpiration
 {
@@ -16,15 +20,17 @@ class CheckTokenExpiration
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $accessToken = $request->bearerToken();
+        try{
+            JWTAuth::parseToken()->authenticate();
+            return $next($request);
 
-        return match(true){ // retorna o caso que a condicão for true
-            // se não houver token, retorna erro 401
-            !accessToken => ApiResponse::error('Token não encontrado', 401),
-
-            
-
+        }catch (TokenExpiredException $e){
+            return ApiResponse::error('Token expirado', 401);
+        }catch (TokenInvalidException $e){
+            return ApiResponse::error('Token inválido', 401);
+        }catch(JWTException $e){
+            return ApiResponse::error('Token não encontrado', 401);
         }
-        return $next($request);
+        
     }
 }
