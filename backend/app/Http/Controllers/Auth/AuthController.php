@@ -28,4 +28,11 @@ class AuthController extends Controller{
         
         return $this->authservice->login($credentials);
     }
+
+    //Não passamos request já que os parametros sao enviados no cookie
+    //Então não haverá nenhum dado sendo passado pelo body, o que faz desnecssario um request
+    public function refresh(){
+
+        return $this->authservice->refresh();
+    }
 }

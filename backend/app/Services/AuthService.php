@@ -6,11 +6,13 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
 class AuthService 
 {
 
@@ -21,7 +23,8 @@ class AuthService
     {
         //retorna o valor de 'throttleKey' e remove ele do array credentials
         $throttleKey = Arr::pull($credentials, 'throttleKey');
-    
+        
+        
         if($throttleKey && RateLimiter::tooManyAttempts($throttleKey, 5)){
             $seconds = RateLimiter::availableIn($throttleKey);
             throw ValidationException::withMessages([
@@ -29,37 +32,42 @@ class AuthService
             ]);
         }
         
+        
+        $user = User::where('email', $credentials['email'])->first();
+        
+        
+        if(!$user || !Hash::check($credentials['password'], $user->password)){
+            RateLimiter::hit($throttleKey, 60);
+            throw ValidationException::withMessages([
+                'email' => 'As credenciais estão inválidas',
+            ]);
+        }
+        
+        if($user->status !== 'active') {
+            throw ValidationException::withMessages([
+                'email' => 'Conta desativada'
+            ]);
+        }
+
+        
         try {
-            $token = Auth::guard('api')->attempt($credentials);
+            $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
             throw ValidationException::withMessages([
                 'email' => 'Erro ao processar autenticação. Tente novamente.',
             ]);
         }
         
-        if(!$token){
-            RateLimiter::hit($throttleKey, 60); //DecaySeconds é o tempo que essa chave
-            //permanecerá no redis, após isso, ela será excluida e o usuario podera fazer 
-            //uma outra tentativa de login sem ser bloqueado
-
-            throw ValidationException::withMessages([
-                    'email' => 'As credenciais estão inválidas'
-                ]);
-        }
-
+       
         RateLimiter::clear($throttleKey);
-
-        $user = Auth::guard('api')->user();
-
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'email' => 'Erro ao recuperar dados do usuário.',
-            ]);
-        }
-
+        
+        
         $refreshToken = $this->generateRefreshToken($user);
         
-        return $this->respondWithToken($token, $user, $refreshToken);
+        
+        $response = $this->respondWithToken($token, $user, $refreshToken);
+        
+        return $response;
     }
     
     
@@ -90,14 +98,16 @@ class AuthService
             $payload = JWTAuth::getPayload();
 
             $tokenType = $payload->get('type');
+            
             if($tokenType == null || $tokenType !== 'refresh'){
                 throw ValidationException::withMessages([
                     'refresh_token' => 'Tipo de token inválido. Use um refresh token.'
                 ]);
             }
     
+            $userId = $payload->get('sub');
             // 4. Obtém o usuário do token validado
-            $user = Auth::guard('api')->user();
+            $user = User::find($userId);
                 
             if (!$user) {
                 throw ValidationException::withMessages([
@@ -106,8 +116,7 @@ class AuthService
             }
 
             // 5. Gera novo access token (refresh do token atual)
-            // O método refresh() do JWTAuth valida e gera novo access token automaticamente
-            $newToken = JWTAuth::refresh();
+            $newToken = JWTAuth::fromUser($user);
 
             // 6. Gera novo refresh token (rotação de tokens para maior segurança)
             $newRefreshToken = $this->generateRefreshToken($user);
@@ -138,7 +147,6 @@ class AuthService
     {
         // Obtém o refresh TTL em minutos
         $refreshTtl = config('jwt.refresh_ttl', 20160); // 14 dias por padrão
-        $now = now();
         
         // Obtém os claims customizados do modelo User
         $customClaims = $user->getJWTCustomClaims();
