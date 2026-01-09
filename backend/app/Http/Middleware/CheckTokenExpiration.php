@@ -21,6 +21,11 @@ class CheckTokenExpiration
     public function handle(Request $request, Closure $next): Response
     {
         try{
+            //Authenticate valida se o token existe
+            // valida se o token é válido
+            // valida se o token não expirou
+            // valida se o token é do usuário correto
+            // valida se não está na blacklist
             JWTAuth::parseToken()->authenticate();
             return $next($request);
 
