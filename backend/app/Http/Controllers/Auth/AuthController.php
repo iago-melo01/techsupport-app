@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Request;
-use App\Services\AuthService;
+use App\Services\Auth\AuthService;
 class AuthController extends Controller{
 
 
