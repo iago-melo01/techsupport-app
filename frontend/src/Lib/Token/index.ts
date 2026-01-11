@@ -5,3 +5,4 @@ export { setAuthorizationHeader } from "./SetAuthorizationHeader";
 export { DataServiceAbortController } from "./DataServiceAbortController";
 export { TokenRefreshManager } from "./TokenRefreshManager";
 export { tryRefreshToken } from "./checkRefreshToken";
+export { isTokenValid } from "./validateToken";

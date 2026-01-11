@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
+import RootRedirect from "./RootRedirect";
 import { lazy } from "react";
 
 const AuthenticatedLayout = lazy(
@@ -19,12 +20,12 @@ const DashboardPage = lazy(() => import("@Modules/Dashboard/Pages/DashboardPage"
 export const router = createBrowserRouter([
 	{
 		path: "/",
+		element: <RootRedirect />,
+	},
+	{
+		path: "/",
 		element: <GuestLayout />,
 		children: [
-			{
-				index: true,
-				element: <Navigate to="/login" replace />,
-			},
 			{
 				path: "login",
 				element: <LoginPage />,
@@ -39,10 +40,6 @@ export const router = createBrowserRouter([
 			</RequireAuth>
 		),
 		children: [
-			{
-				index: true,
-				element: <Navigate to="/dashboard" replace />,
-			},
 			{
 				path: "dashboard",
 				element: <DashboardPage />,
