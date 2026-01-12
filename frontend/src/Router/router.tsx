@@ -17,6 +17,9 @@ const ProfilePage = lazy(() => import("@Modules/User/Pages/ProfilePage"));
 // Dashboard
 const DashboardPage = lazy(() => import("@Modules/Dashboard/Pages/DashboardPage"));
 
+// Users
+const UsersPage = lazy(() => import("@Modules/User/Pages/UsersPage"));
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
@@ -47,6 +50,10 @@ export const router = createBrowserRouter([
 			{
 				path: "perfil",
 				element: <ProfilePage />,
+			},
+			{
+				path: "usuarios",
+				element: <UsersPage />,
 			},
 		],
 	},

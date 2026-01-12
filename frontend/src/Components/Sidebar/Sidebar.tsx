@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, List, User, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, List, User, LogOut, Users2 } from "lucide-react";
 import { useAuthContext } from "@/Context/AuthContext";
 import { routes } from "@/Router/routes";
 import { removeToken } from "@/Lib/Token";
@@ -39,6 +39,12 @@ export default function Sidebar() {
 		},
 		{
 			id: 4,
+			label: "Usuários",
+			icon: <Users2 size={20} />,
+			route: routes.internal.users,
+		},
+		{
+			id: 5,
 			label: "Perfil",
 			icon: <User size={20} />,
 			route: routes.internal.profile,
