@@ -37,12 +37,17 @@ export default function Sidebar() {
 			icon: <List size={20} />,
 			route: "/lista",
 		},
-		{
-			id: 4,
-			label: "Usuários",
-			icon: <Users2 size={20} />,
-			route: routes.internal.users,
-		},
+		// Apenas administradores podem ver a seção de Usuários
+		...(user?.role === "admin"
+			? [
+					{
+						id: 4,
+						label: "Usuários",
+						icon: <Users2 size={20} />,
+						route: routes.internal.users,
+					},
+				]
+			: []),
 		{
 			id: 5,
 			label: "Perfil",
@@ -71,7 +76,7 @@ export default function Sidebar() {
 	};
 
 	return (
-		<div className="w-64 bg-[#3E5063] min-h-screen flex flex-col">
+		<div className="w-64 bg-[#3E5063] h-screen flex flex-col">
 			{/* Logo */}
 			<div className="p-6 border-b border-[#5B6A7A]">
 				<div className="flex items-center gap-3">

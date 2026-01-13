@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getUsersListQuery } from "@/Modules/User/Services/Queries/getUsersListQuery";
-import { Trash2 } from "lucide-react";
+import { Trash2, UserPlus } from "lucide-react";
 import { LoadingScreen } from "@/Components/Loading/LoadingScreen";
+import CreateUserForm from "@/Modules/User/Components/CreateUserForm";
 
 export default function UsersPage() {
 	const [currentPage, setCurrentPage] = useState(1);
+	const [showCreateForm, setShowCreateForm] = useState(false);
 	const { data, isLoading, isError, error } = useQuery(
 		getUsersListQuery(currentPage)
 	);
@@ -32,6 +34,7 @@ export default function UsersPage() {
 		const roleMap: Record<string, string> = {
 			admin: "Administrador",
 			user: "Usuário",
+			technician: "Técnico",
 			agent: "Agente",
 		};
 		return roleMap[role] || role;
@@ -45,10 +48,29 @@ export default function UsersPage() {
 
 	return (
 		<div className="p-6 space-y-6">
-			<div>
-				<h1 className="text-2xl font-bold text-gray-800 mb-2">Usuários</h1>
-				<p className="text-gray-600">Visualize e gerencie os usuários do sistema</p>
+			<div className="flex justify-between items-center">
+				<div>
+					<h1 className="text-2xl font-bold text-gray-800 mb-2">Usuários</h1>
+					<p className="text-gray-600">Visualize e gerencie os usuários do sistema</p>
+				</div>
+				<button
+					onClick={() => setShowCreateForm(true)}
+					className="flex items-center gap-2 px-4 py-2 bg-[#3E5063] hover:bg-[#768b9a] text-white font-medium rounded-lg transition-colors"
+				>
+					<UserPlus size={20} />
+					Novo Usuário
+				</button>
 			</div>
+
+			{showCreateForm && (
+				<CreateUserForm
+					onClose={() => setShowCreateForm(false)}
+					onSuccess={() => {
+						setShowCreateForm(false);
+						setCurrentPage(1); // Volta para a primeira página para ver o novo usuário
+					}}
+				/>
+			)}
 
 			{/* Tabela */}
 			<div className="bg-white rounded-lg shadow overflow-hidden">

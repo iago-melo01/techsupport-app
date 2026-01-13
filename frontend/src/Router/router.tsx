@@ -1,5 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
+import RequireAdmin from "./RequireAdmin";
+import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
 import RootRedirect from "./RootRedirect";
 import { lazy } from "react";
 
@@ -25,16 +27,20 @@ export const router = createBrowserRouter([
 		path: "/",
 		element: <RootRedirect />,
 	},
-	{
-		path: "/",
-		element: <GuestLayout />,
-		children: [
-			{
-				path: "login",
-				element: <LoginPage />,
-			},
-		],
-	},
+		{
+			path: "/",
+			element: <GuestLayout />,
+			children: [
+				{
+					path: "login",
+					element: (
+						<RedirectIfAuthenticated>
+							<LoginPage />
+						</RedirectIfAuthenticated>
+					),
+				},
+			],
+		},
 	{
 		path: "/",
 		element: (
@@ -53,7 +59,11 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: "usuarios",
-				element: <UsersPage />,
+				element: (
+					<RequireAdmin>
+						<UsersPage />
+					</RequireAdmin>
+				),
 			},
 		],
 	},
