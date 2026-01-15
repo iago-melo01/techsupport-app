@@ -31,6 +31,10 @@ class User extends Authenticatable implements JWTSubject
         'status',
     ];
 
+    public function ticketsCreated(){
+        return $this->hasMany(Ticket::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
