@@ -30,9 +30,15 @@ class User extends Authenticatable implements JWTSubject
         'role',
         'status',
     ];
-
+    //gera algo como isso
+    //SELECT * FROM tickets
+    //WHERE tickets.user_id = {id_do_user}
     public function ticketsCreated(){
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(Ticket::class, 'user_id');
+    }
+
+    public function ticketsAssigned(){
+        return $this->hasMany(Ticket::class, 'technician_id');
     }
 
     /**
