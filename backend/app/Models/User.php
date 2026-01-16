@@ -51,19 +51,7 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($user) {
-            if (empty($user->uuid)) {
-                $user->uuid = (string) Str::uuid();
-            }
-        });
-    }
+    
 
     public function getJWTIdentifier(){
         return $this->getKey();
