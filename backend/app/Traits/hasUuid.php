@@ -1,7 +1,9 @@
 <?php
 namespace App\Traits;
+
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-trait hasUuid {
+trait HasUuid {
 
 
     protected static function bootHasUuid(){
@@ -9,6 +11,8 @@ trait hasUuid {
            if(empty($model->uuid)){
             $model->uuid = (string) Str::uuid();
            }
+           Log::info('Uuid gerado: ' . $model->uuid);
         });
+
     }
 }
