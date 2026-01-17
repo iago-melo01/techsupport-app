@@ -9,3 +9,4 @@ Route::get('/user', function (Request $request) {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/user.php';
+require __DIR__.'/ticket.php';

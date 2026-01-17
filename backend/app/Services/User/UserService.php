@@ -20,7 +20,8 @@ class UserService{
 
         
         return DB::transaction(function () use ($data) {
-            $user = User::create($data);
+            return $user = User::create($data);
+            
         });
     }
 }
