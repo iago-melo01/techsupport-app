@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Providers;
+
+use App\Models\Ticket;
 use App\Models\User;
+use App\Policies\TicketPolicy;
 use App\Policies\User\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 class AuthServiceProvider extends ServiceProvider{
     
     protected $policies = [
         User::class => UserPolicy::class,
-
+        Ticket::class => TicketPolicy::class,
     ];
 
 
