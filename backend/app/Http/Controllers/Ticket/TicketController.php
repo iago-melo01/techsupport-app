@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Ticket;
 
+use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTicketRequest;
+use App\Http\Requests\Ticket\StoreTicketRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\Ticket\TicketService;
 class TicketController extends Controller
 {
 
-    public function __construct(TicketService $ticketService){
+    public function __construct(protected TicketService $ticketService){
         $this->ticketService = $ticketService; 
     }
 
@@ -19,6 +20,8 @@ class TicketController extends Controller
 
         $validatedData = $request->validated();
 
-        return $this->ticketService->store($validatedData);
+        $userCreated =  $this->ticketService->store($validatedData);
+
+        return ApiResponse::success('User created successfully', 201, ['data' => $validatedData]);
     }
 }

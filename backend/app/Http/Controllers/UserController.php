@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Helpers\ApiResponse;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\User\UserService;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Models\User;
+use DeepCopy\f001\A;
 use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
@@ -28,6 +31,8 @@ class UserController extends Controller
         //recieves validated data from the request
         $validatedData = $request->validated();
 
-        return $this->userservice->store($validatedData);
+        $userCreated = $this->userservice->store($validatedData);
+
+        return ApiResponse::success('User created successfully', 201, ['data' => $validatedData]);
     }
 }
