@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('status')->default('Open');
             $table->string('description');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('technician_id')->constrained('users')->nullable()->nullOnDelete();
+            $table->foreignId('technician_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('category_id')->constrained('categories');
         });  
         
