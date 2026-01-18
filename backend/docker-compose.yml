@@ -16,6 +16,21 @@ services:
         networks:
             - laravel
 
+    phpmyadmin:
+        image: phpmyadmin:5-apache
+        container_name: chamadosit_phpmyadmin
+        restart: unless-stopped
+        ports: 
+            - "8081:80"
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            UPLOAD_LIMIT: 128M
+        depends_on:
+            - mysql
+        networks:
+            - laravel
+
 volumes:
     dbdata:
         driver: local
