@@ -3,7 +3,8 @@
 namespace App\Http\Requests\Ticket;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 class StoreTicketRequest extends FormRequest
 {
     /**
@@ -21,7 +22,10 @@ class StoreTicketRequest extends FormRequest
      */
     public function rules(): array
     {
+
+
         return [
+            
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'category_uuid' => ['required', 'string', 'exists:categories,uuid']
