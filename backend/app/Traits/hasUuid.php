@@ -11,7 +11,7 @@ trait HasUuid {
            if(empty($model->uuid)){
             $model->uuid = (string) Str::uuid();
            }
-           Log::info('Uuid gerado: ' . $model->uuid);
+           
         });
 
     }

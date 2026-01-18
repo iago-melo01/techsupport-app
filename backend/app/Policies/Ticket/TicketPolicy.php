@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies\Ticket;
 
 
 use App\Policies\BasePolicy\BasePolicy;
