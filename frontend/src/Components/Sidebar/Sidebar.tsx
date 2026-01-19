@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, List, User, LogOut, Users2 } from "lucide-react";
+import { LayoutDashboard, FileText, List, User, LogOut, Users2, TicketPlus } from "lucide-react";
 import { useAuthContext } from "@/Context/AuthContext";
 import { routes } from "@/Router/routes";
 import { removeToken } from "@/Lib/Token";
@@ -30,6 +30,12 @@ export default function Sidebar() {
 			label: "Chamados",
 			icon: <FileText size={20} />,
 			route: "/chamados",
+		},
+		{
+			id: 2.5,
+			label: "Criar ticket",
+			icon: <TicketPlus size={20} />,
+			route: routes.internal.createTicket,
 		},
 		{
 			id: 3,

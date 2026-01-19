@@ -6,5 +6,6 @@ export const routes = {
 		dashboard: "/dashboard",
 		tickets: "/chamados",
 		users: "/usuarios",
+		createTicket: "/criar-ticket",
 	},
 } as const;

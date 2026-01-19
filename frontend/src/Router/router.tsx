@@ -22,6 +22,9 @@ const DashboardPage = lazy(() => import("@Modules/Dashboard/Pages/DashboardPage"
 // Users
 const UsersPage = lazy(() => import("@Modules/User/Pages/UsersPage"));
 
+// Tickets
+const CreateTicketPage = lazy(() => import("@Modules/Ticket/Pages/CreateTicketPage"));
+
 export const router = createBrowserRouter([
 	{
 		path: "/",
@@ -64,6 +67,10 @@ export const router = createBrowserRouter([
 						<UsersPage />
 					</RequireAdmin>
 				),
+			},
+			{
+				path: "criar-ticket",
+				element: <CreateTicketPage />,
 			},
 		],
 	},
