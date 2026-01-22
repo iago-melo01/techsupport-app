@@ -32,4 +32,15 @@ class TicketService {
 
 
     }
+
+    public function getAll(){
+        return Ticket::query()->with('category:name,description')->select([
+            'uuid',
+            'status', 
+            'title', 
+            'description', 
+            'user_id', 
+            'technician_id',
+            'category_id',])->paginate(25);
+    }
 }

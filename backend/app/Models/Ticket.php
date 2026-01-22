@@ -27,7 +27,9 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'technician_id');
     }
 
+    
     public function category(){
+        //sintaxe: Ticket possui uma entidade category, cuja chave estrangeira está armazenada em category_id
         return $this->belongsTo(Category::class, 'category_id');
     }
 }
