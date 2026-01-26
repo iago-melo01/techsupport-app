@@ -6,17 +6,14 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Ticket\StoreTicketRequest;
 use App\Http\Requests\Ticket\UpdateTicketRequest;
-use Illuminate\Http\Request;
 use App\Models\Ticket;
 use App\Services\Ticket\TicketService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketController extends Controller
 {
 
-    public function __construct(protected TicketService $ticketService)
-    {
-        $this->ticketService = $ticketService;
-    }
+    public function __construct(protected TicketService $ticketService) {}
 
     public function store(StoreTicketRequest $request)
     {
@@ -24,9 +21,9 @@ class TicketController extends Controller
 
         $validatedData = $request->validated();
 
-        $userCreated =  $this->ticketService->store($validatedData);
+        $ticketCreated =  $this->ticketService->store($validatedData);
 
-        return ApiResponse::success('Ticket created successfully', 201, ['data' => $validatedData]);
+        return ApiResponse::success('Ticket created successfully', 201, ['data' => $ticketCreated]);
     }
 
     public function index()
@@ -38,14 +35,16 @@ class TicketController extends Controller
         return ApiResponse::success('success', 200, ['data' => $ticketsArray]);
     }
 
-    public function update(UpdateTicketRequest $request)
+    public function update(UpdateTicketRequest $request, string $uuid)
     {
         $data = $request->validated();
 
-        $this->authorize('update', Ticket::class);
+        $ticket = Ticket::where('uuid', $uuid)->firstOrFail();
 
-        $updatedUser = $this->ticketService->update($data);
+        $this->authorize('update', $ticket);
 
-        return ApiResponse::success('Ticket Updated Successfully', 200, ['data' => $updatedUser]);
+        $updatedTicket = $this->ticketService->update($data, $ticket);
+
+        return ApiResponse::success('Ticket Updated Successfully', 200, ['data' => $updatedTicket]);
     }
 }

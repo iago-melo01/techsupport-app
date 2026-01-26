@@ -27,7 +27,6 @@ class UpdateTicketRequest extends FormRequest
             'status' => ['sometimes', 'string', Rule::in(['Open', 'Closed', 'Reviewing', 'Solved'])],
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
-            'user_uuid' => ['sometimes', 'uuid', 'exists:users,uuid'],
             'technician_uuid' => ['nullable', 'uuid', 'exists:users,uuid'],
             'category_uuid' => ['sometimes', 'uuid', 'exists:categories,uuid'],
 
