@@ -13,7 +13,8 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
-class AuthService 
+
+class AuthService
 {
 
     private const REFRESH_TOKEN_COOKIE_NAME = 'refresh_token';
@@ -23,33 +24,33 @@ class AuthService
     {
         //retorna o valor de 'throttleKey' e remove ele do array credentials
         $throttleKey = Arr::pull($credentials, 'throttleKey');
-        
-        
-        if($throttleKey && RateLimiter::tooManyAttempts($throttleKey, 5)){
+
+
+        if ($throttleKey && RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             throw ValidationException::withMessages([
                 'email' => 'Você fez muitas tentativas de login. Tente novamente em ' . ceil($seconds / 60) . ' minutos',
             ]);
         }
-        
-        
+
+
         $user = User::where('email', $credentials['email'])->first();
-        
-        
-        if(!$user || !Hash::check($credentials['password'], $user->password)){
+
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($throttleKey, 60);
             throw ValidationException::withMessages([
                 'email' => 'As credenciais estão inválidas',
             ]);
         }
-        
-        if($user->status !== 'active') {
+
+        if ($user->status !== 'active') {
             throw ValidationException::withMessages([
                 'email' => 'Conta desativada'
             ]);
         }
 
-        
+
         try {
             $token = JWTAuth::fromUser($user);
         } catch (JWTException $e) {
@@ -57,20 +58,20 @@ class AuthService
                 'email' => 'Erro ao processar autenticação. Tente novamente.',
             ]);
         }
-        
-       
+
+
         RateLimiter::clear($throttleKey);
-        
-        
+
+
         $refreshToken = $this->generateRefreshToken($user);
-        
-        
+
+
         $response = $this->respondWithToken($token, $user, $refreshToken);
-        
+
         return $response;
     }
-    
-    
+
+
 
     /**
      * Atualiza o access token usando o refresh token do cookie
@@ -83,32 +84,32 @@ class AuthService
         try {
             // 1. Verifica se o refresh token existe no cookie
             $refreshToken = request()->cookie(self::REFRESH_TOKEN_COOKIE_NAME);
-            
+
             if (!$refreshToken) {
                 throw ValidationException::withMessages([
                     'refresh_token' => 'Token de atualização não encontrado'
                 ]);
             }
 
-            // 2. Define o token no guard para validação
+            // define o token no guard de validacao
             JWTAuth::setToken($refreshToken);
 
-            // 3. Valida o token e verifica se está ativo (não expirado)
-            // O getPayload() lança exceção automaticamente se o token for inválido ou expirado
+
+            // se o token for invalido, lança excecao automaticamente
             $payload = JWTAuth::getPayload();
 
             $tokenType = $payload->get('type');
-            
-            if($tokenType == null || $tokenType !== 'refresh'){
+
+            if ($tokenType == null || $tokenType !== 'refresh') {
                 throw ValidationException::withMessages([
                     'refresh_token' => 'Tipo de token inválido. Use um refresh token.'
                 ]);
             }
-    
+
             $userId = $payload->get('sub');
-            // 4. Obtém o usuário do token validado
+            // pega o usuario do token
             $user = User::find($userId);
-                
+
             if (!$user) {
                 throw ValidationException::withMessages([
                     'refresh_token' => 'Usuário não encontrado para o token fornecido'
@@ -123,7 +124,6 @@ class AuthService
 
             // 7. Retorna novo access token e atualiza o refresh token no cookie
             return $this->respondWithToken($newToken, $user, $newRefreshToken);
-
         } catch (JWTException $e) {
             throw ValidationException::withMessages([
                 'refresh_token' => 'Token inválido ou expirado. Faça login novamente.'
@@ -147,26 +147,26 @@ class AuthService
     {
         // Obtém o refresh TTL em minutos
         $refreshTtl = config('jwt.refresh_ttl', 20160); // 14 dias por padrão
-        
+
         // Obtém os claims customizados do modelo User
         $customClaims = $user->getJWTCustomClaims();
-        
+
         // Prepara os claims do token
         $claims = [
             'sub' => $user->getKey(), // Subject (ID do usuário)
             'type' => 'refresh', // Tipo do token
         ];
-        
+
         // Adiciona os claims customizados do modelo
         $claims = array_merge($claims, $customClaims);
-        
+
         // Usa o factory para criar o Payload com TTL customizado
         // O factory calcula automaticamente iss, iat, exp, nbf, jti
         $payload = JWTAuth::factory()
             ->setTTL($refreshTtl)
             ->customClaims($claims)
             ->make();
-        
+
         // Codifica o payload em um token JWT
         return JWTAuth::manager()->encode($payload)->get();
     }
@@ -183,11 +183,11 @@ class AuthService
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer', 
+            'token_type' => 'bearer',
             'expires_in' => config('jwt.ttl') * 60, // em segundos
             'user' => [
                 'uuid' => $user->uuid,
-                'name' => $user->name, 
+                'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
             ],
@@ -204,7 +204,8 @@ class AuthService
         );
     }
 
-    private function clearRefreshTokenCookie(): Cookie{
+    private function clearRefreshTokenCookie(): Cookie
+    {
         return cookie(
             self::REFRESH_TOKEN_COOKIE_NAME,
             null, //valor null remove o cookie do navegador
@@ -217,74 +218,73 @@ class AuthService
             config('session.same_site', 'lax') // sameSite: 'lax', 'strict' ou 'none'
         );
     }
-    public function logout(): JsonResponse 
+    public function logout(): JsonResponse
     {
 
-        try{
+        try {
             $token = JWTAuth::getToken();
 
-            if($token){
+            if ($token) {
                 //invalida o token na cache definida (nessa caso é a tabela do banco cache)
                 //será removido do banco quando o token expirar
                 JWTAuth::invalidate($token);
             }
 
             $refreshToken = request()->cookie(self::REFRESH_TOKEN_COOKIE_NAME);
-    
-            if($refreshToken){
-                try{
+
+            if ($refreshToken) {
+                try {
                     JWTAuth::setToken($refreshToken);
                     JWTAuth::invalidate();
-                }catch(JWTException $e){}
-                
+                } catch (JWTException $e) {
+                }
             }
 
             return response()->json([
-            'success' => true,
-            'message' => 'Logout realizado com sucesso',
+                'success' => true,
+                'message' => 'Logout realizado com sucesso',
             ])->cookie($this->clearRefreshTokenCookie());
-        }catch(JWTException $e) {
+        } catch (JWTException $e) {
             // se o token ja foi invalidado ou não existe, ainda assim limpa o cookie
 
             return response()->json([
                 'success' => true,
                 'message' => 'Logout realizado com sucesso',
-                ])->cookie($this->clearRefreshTokenCookie());
-        }catch (\Exception $e) {
+            ])->cookie($this->clearRefreshTokenCookie());
+        } catch (\Exception $e) {
             throw ValidationException::withMessages([
                 'logout' => 'Erro ao realizar logout. Tente novamente.'
             ]);
         }
-        
     }
 
-    public function me(): JsonResponse{
-        try{
+    public function me(): JsonResponse
+    {
+        try {
             $user = Auth::guard('api')->user();
 
-            if(!$user){
+            if (!$user) {
                 throw ValidationException::withMessages([
                     'auth' => 'Usuário não autenticado'
                 ]);
             }
 
             return response()->json([
-                'success' =>true,
+                'success' => true,
                 'user' => [
                     'uuid' => $user->uuid,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role' => $user->role,
                 ]
-                ]);
-            
-        }catch(JWTException $e){
+            ]);
+        } catch (JWTException $e) {
             throw ValidationException::withMessages([
                 'auth' => 'Token inválido ou expirado. Faça Login Novamente'
             ]);
-        }catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             throw $e;
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw ValidationException::withMessages([
                 'auth' => 'Erro ao recuperar dados do usuário.'
             ]);
