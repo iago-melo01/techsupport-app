@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
 import RequireAdmin from "./RequireAdmin";
+import RequireAdminOrTechnician from "./RequireAdminOrTechnician";
 import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
 import RootRedirect from "./RootRedirect";
 import { lazy } from "react";
@@ -24,6 +25,7 @@ const UsersPage = lazy(() => import("@Modules/User/Pages/UsersPage"));
 
 // Tickets
 const CreateTicketPage = lazy(() => import("@Modules/Ticket/Pages/CreateTicketPage"));
+const TicketsPage = lazy(() => import("@Modules/Ticket/Pages/TicketsPage"));
 
 export const router = createBrowserRouter([
 	{
@@ -71,6 +73,14 @@ export const router = createBrowserRouter([
 			{
 				path: "criar-ticket",
 				element: <CreateTicketPage />,
+			},
+			{
+				path: "chamados",
+				element: (
+					<RequireAdminOrTechnician>
+						<TicketsPage />
+					</RequireAdminOrTechnician>
+				),
 			},
 		],
 	},
