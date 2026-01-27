@@ -6,4 +6,7 @@ export const QUERY_KEYS = {
 	CATEGORY: {
 		LIST: ["categories", "list"],
 	},
+	TICKET: {
+		LIST: ["tickets", "list"],
+	},
 } as const;
