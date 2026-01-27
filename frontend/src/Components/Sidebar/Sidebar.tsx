@@ -19,30 +19,40 @@ export default function Sidebar() {
 	const navigate = useNavigate();
 
 	const menuItems: MenuItem[] = [
-		{
-			id: 1,
-			label: "Dashboard",
-			icon: <LayoutDashboard size={20} />,
-			route: "/dashboard",
-		},
-		{
-			id: 2,
-			label: "Chamados",
-			icon: <FileText size={20} />,
-			route: "/chamados",
-		},
+		// Dashboard e Chamados não são visíveis para usuários com role 'user'
+		...(user?.role !== "user"
+			? [
+					{
+						id: 1,
+						label: "Dashboard",
+						icon: <LayoutDashboard size={20} />,
+						route: "/dashboard",
+					},
+					{
+						id: 2,
+						label: "Chamados",
+						icon: <FileText size={20} />,
+						route: "/chamados",
+					},
+				]
+			: []),
 		{
 			id: 2.5,
 			label: "Criar ticket",
 			icon: <TicketPlus size={20} />,
 			route: routes.internal.createTicket,
 		},
-		{
-			id: 3,
-			label: "Lista",
-			icon: <List size={20} />,
-			route: "/lista",
-		},
+		// Apenas administradores e técnicos podem ver a seção de Tickets
+		...(user?.role === "admin" || user?.role === "technician"
+			? [
+					{
+						id: 3,
+						label: "Tickets",
+						icon: <List size={20} />,
+						route: routes.internal.tickets,
+					},
+				]
+			: []),
 		// Apenas administradores podem ver a seção de Usuários
 		...(user?.role === "admin"
 			? [
