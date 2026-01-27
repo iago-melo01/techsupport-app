@@ -46,6 +46,14 @@ class UserSeeder extends Seeder
                 'role' => 'user',
                 'status' => 'active',
             ],
+            [
+                'uuid' => Str::uuid(),
+                'name' => 'Técnico',
+                'email' => 'technician@example.com',
+                'password' => 'technician123',
+                'role' => 'technician',
+                'status' => 'active',
+            ],
         ];
 
         foreach ($users as $userData) {
