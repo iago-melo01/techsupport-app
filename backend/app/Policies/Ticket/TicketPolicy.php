@@ -22,7 +22,7 @@ class TicketPolicy extends BasePolicy
             return true;
         }
 
-        // Retorna null para continuar para os outros métodos
+        //retorna null para continuar para os outros métodos
         return null;
     }
 
@@ -32,9 +32,13 @@ class TicketPolicy extends BasePolicy
     }
 
     public function view(User $user, Ticket $ticket)
-    { // ainda falta passar instancia do ticket como parametro pra poder comparar
-        return true;
+    {
+        if ($user->isTechnician()) {
+            return true;
+        }
+        return ($user->id === $ticket->user_id) ? true : false;
     }
+
 
     public function viewAny(User $user)
     {
