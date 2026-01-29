@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, List, User, LogOut, Users2, TicketPlus } from "lucide-react";
+import { LayoutDashboard, FileText, User, LogOut, Users2, TicketPlus } from "lucide-react";
 import { useAuthContext } from "@/Context/AuthContext";
 import { routes } from "@/Router/routes";
 import { removeToken } from "@/Lib/Token";
@@ -22,19 +22,19 @@ export default function Sidebar() {
 		// Dashboard e Chamados não são visíveis para usuários com role 'user'
 		...(user?.role !== "user"
 			? [
-					{
-						id: 1,
-						label: "Dashboard",
-						icon: <LayoutDashboard size={20} />,
-						route: "/dashboard",
-					},
-					{
-						id: 2,
-						label: "Chamados",
-						icon: <FileText size={20} />,
-						route: "/chamados",
-					},
-				]
+				{
+					id: 1,
+					label: "Dashboard",
+					icon: <LayoutDashboard size={20} />,
+					route: "/dashboard",
+				},
+				{
+					id: 2,
+					label: "Chamados",
+					icon: <FileText size={20} />,
+					route: "/chamados",
+				},
+			]
 			: []),
 		{
 			id: 2.5,
@@ -42,27 +42,16 @@ export default function Sidebar() {
 			icon: <TicketPlus size={20} />,
 			route: routes.internal.createTicket,
 		},
-		// Apenas administradores e técnicos podem ver a seção de Tickets
-		...(user?.role === "admin" || user?.role === "technician"
-			? [
-					{
-						id: 3,
-						label: "Tickets",
-						icon: <List size={20} />,
-						route: routes.internal.tickets,
-					},
-				]
-			: []),
 		// Apenas administradores podem ver a seção de Usuários
 		...(user?.role === "admin"
 			? [
-					{
-						id: 4,
-						label: "Usuários",
-						icon: <Users2 size={20} />,
-						route: routes.internal.users,
-					},
-				]
+				{
+					id: 4,
+					label: "Usuários",
+					icon: <Users2 size={20} />,
+					route: routes.internal.users,
+				},
+			]
 			: []),
 		{
 			id: 5,
@@ -113,11 +102,10 @@ export default function Sidebar() {
 						<Link
 							key={item.id}
 							to={item.route}
-							className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-								isActive
+							className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive
 									? "bg-blue-600 text-white"
 									: "text-gray-300 hover:bg-[#5B6A7A] hover:text-white"
-							}`}
+								}`}
 						>
 							{item.icon}
 							<span className="font-medium">{item.label}</span>
