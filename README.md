@@ -11,8 +11,6 @@ A aplicação centraliza solicitações de suporte técnico, substitui fluxos in
 - **Backend:** Projeto de estudo em **Laravel** (API REST, JWT, Policies, Services, migrations).
 - **Frontend:** SPA em React + TypeScript, em grande parte desenvolvida com suporte de IA, integrada à API.
 
-A especificação do sistema está em [`backend/docs/documento-visao.md`](backend/docs/documento-visao.md) (problema, atores, requisitos funcionais e não funcionais, regras de negócio).
-
 ---
 
 ## O sistema em resumo
@@ -168,13 +166,6 @@ Exemplos (consulte `UserSeeder` para a lista completa):
 - Técnico: `technician@example.com` / `technician123`
 - User: `email@gmail.com` / `iago0406`
 
----
-
-## Documentação de visão
-
-O escopo, atores, requisitos e regras de negócio estão detalhados em **[`backend/docs/documento-visao.md`](backend/docs/documento-visao.md)**. Este README descreve a implementação atual; eventuais diferenças em relação ao documento (ex.: nomenclatura *Agent* vs *Technician*) seguem o que está no código.
-
----
 
 ## Licença
 
