@@ -9,22 +9,25 @@ use Illuminate\Http\Request;
 use App\Services\User\UserService;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Models\User;
+use App\Services\Ticket\TicketService;
 use DeepCopy\f001\A;
 use Illuminate\Support\Facades\Auth;
+
 class UserController extends Controller
 {
 
-    public function __construct(protected UserService $userservice){
-        $this->userservice = $userservice;
-    }
-    public function index(){
-        
+    public function __construct(protected UserService $userservice, protected TicketService $ticketService) {}
+
+    public function index()
+    {
+
         $this->authorize('viewAny', User::class);
-        
+
         return $this->userservice->getAll();
     }
 
-    public function store(StoreUserRequest $request){
+    public function store(StoreUserRequest $request)
+    {
 
         $this->authorize('create', User::class);
 

@@ -46,6 +46,26 @@ class TicketService
         ])->paginate(25);
     }
 
+    public function getTickets()
+    {
+        $user = auth('api')->user();
+        $query = Ticket::with(['category:id,name,description', 'user:id,name', 'technician:id,name'])
+            ->where('user_id', $user->id)->select(
+                [
+                    'uuid',
+                    'title',
+                    'status',
+                    'description',
+                    'user_id',
+                    'technician_id',
+                    'category_id'
+                ]
+            )
+            ->paginate(25);
+
+        return $query;
+    }
+
     public function update(array $data, Ticket $ticket): Ticket
     {
 

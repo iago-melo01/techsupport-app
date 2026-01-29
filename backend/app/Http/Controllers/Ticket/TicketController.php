@@ -26,6 +26,13 @@ class TicketController extends Controller
         return ApiResponse::success('Ticket created successfully', 201, ['data' => $ticketCreated]);
     }
 
+    public function getTickets()
+    {
+
+        $tickets = $this->ticketService->getTickets();
+        return ApiResponse::success('success', 200, ['data' => $tickets]);
+    }
+
     public function index()
     {
         $this->authorize('viewAny', Ticket::class);
