@@ -26,6 +26,7 @@ const UsersPage = lazy(() => import("@Modules/User/Pages/UsersPage"));
 // Tickets
 const CreateTicketPage = lazy(() => import("@Modules/Ticket/Pages/CreateTicketPage"));
 const TicketsPage = lazy(() => import("@Modules/Ticket/Pages/TicketsPage"));
+const MyTicketsPage = lazy(() => import("@Modules/Ticket/Pages/MyTicketsPage"));
 
 export const router = createBrowserRouter([
 	{
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
 			{
 				path: "criar-ticket",
 				element: <CreateTicketPage />,
+			},
+			{
+				path: "meus-chamados",
+				element: <MyTicketsPage />,
 			},
 			{
 				path: "chamados",

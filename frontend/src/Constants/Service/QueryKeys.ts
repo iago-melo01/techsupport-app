@@ -8,5 +8,6 @@ export const QUERY_KEYS = {
 	},
 	TICKET: {
 		LIST: ["tickets", "list"],
+		MY_LIST: ["tickets", "my-list"],
 	},
 } as const;

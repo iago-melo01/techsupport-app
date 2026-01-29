@@ -5,6 +5,7 @@ export const routes = {
 		profile: "/perfil",
 		dashboard: "/dashboard",
 		tickets: "/chamados",
+		myTickets: "/meus-chamados",
 		users: "/usuarios",
 		createTicket: "/criar-ticket",
 	},
