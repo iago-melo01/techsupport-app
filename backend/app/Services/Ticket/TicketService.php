@@ -66,6 +66,12 @@ class TicketService
         return $query;
     }
 
+    public function findByUuid(string $uuid): Ticket{
+        return Ticket::where('uuid', $uuid)->firstOrFail();
+    }
+
+    
+
     public function update(array $data, Ticket $ticket): Ticket
     {
 

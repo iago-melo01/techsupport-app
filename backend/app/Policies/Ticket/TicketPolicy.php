@@ -12,12 +12,12 @@ class TicketPolicy extends BasePolicy
 
     public function before(?User $user, string $ability)
     {
-        // Se não há usuário autenticado, nega acesso
+        //se nao tem usuario autenticado, nega acesso
         if (!$user) {
             return false;
         }
 
-        // Se é admin, permite tudo
+        //se é admin, permite tudo
         if ($user->isAdmin()) {
             return true;
         }
