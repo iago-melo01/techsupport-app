@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Ticket;
 
+use App\Enums\TicketEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,7 +25,7 @@ class UpdateTicketRequest extends FormRequest
     {
         return [
 
-            'status' => ['sometimes', 'string', Rule::in(['Open', 'Closed', 'Reviewing', 'Solved'])],
+            'status' => ['sometimes', 'string', Rule::in(TicketEnum::values())],
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['sometimes', 'string'],
             'technician_uuid' => ['nullable', 'uuid', 'exists:users,uuid'],
