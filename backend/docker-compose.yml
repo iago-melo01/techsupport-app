@@ -30,10 +30,21 @@ services:
             - mysql
         networks:
             - laravel
+    
+    redis:
+        image: redis:7-alpine
+        container_name: chamadosit_redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redisdata:/data
+        networks:
+            - laravel
 
 volumes:
     dbdata:
         driver: local
+    redisdata:
 
 networks:
     laravel:
